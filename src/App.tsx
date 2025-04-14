@@ -36,13 +36,16 @@ function App() {
                 Save to sheet
               </Button>
             </div>
-            {Object.entries(stats!).map(([key, val]) => {
-              return (
-                <p key={key}>
-                  {key}: {val}
-                </p>
-              );
-            })}
+            <div className="grid grid-cols-2">
+              {Object.entries(stats!).map(([key, val]) => {
+                return (
+                  <>
+                    <span>{key}: </span>
+                    <input defaultValue={val} />
+                  </>
+                );
+              })}
+            </div>
           </div>
         </div>
       </main>
