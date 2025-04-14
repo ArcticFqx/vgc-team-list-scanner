@@ -45,7 +45,6 @@ function App() {
             })}
           </div>
         </div>
-        <iframe className="hidden" id="printer"></iframe>
       </main>
     </>
   );
