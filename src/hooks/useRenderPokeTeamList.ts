@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { PokeStats } from "./useScanPokeBox";
 import { PDFDocument, StandardFonts } from "pdf-lib";
+import { PokeStatsSchema, type PokeStats } from "@/lib/PokeStatsSchema";
 
 const url = "./team-list.pdf";
 const pdfOriginal = await fetch(url).then((res) => res.arrayBuffer());
@@ -18,12 +18,12 @@ export default function useRenderPokeTeamList() {
     };
   }, []);
 
-  const exportPdf = async (stats: PokeStats) => {
+  const exportPdf = async (statList: PokeStats[]) => {
     const pdfDoc = await PDFDocument.load(pdfOriginal);
     const helvetica = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
 
     const pages = pdfDoc.getPages();
-    const leftOrder = [
+    const leftOrder: (keyof PokeStats)[] = [
       "name",
       "tera",
       "ability",
@@ -32,8 +32,9 @@ export default function useRenderPokeTeamList() {
       "move2",
       "move3",
       "move4",
-    ];
-    const rightOrder = [
+    ] as const;
+
+    const rightOrder: (keyof PokeStats)[] = [
       "level",
       "hp",
       "attack",
@@ -41,31 +42,46 @@ export default function useRenderPokeTeamList() {
       "spatk",
       "spdef",
       "speed",
-    ];
+    ] as const;
+
+    statList[0][rightOrder[0]];
 
     const leftX = 90;
     const leftY = 652;
     const rightX = 250;
     const rightY = 628;
 
-    pages.forEach((page) => {
-      leftOrder.forEach((idx, i) => {
-        page.drawText(stats[idx], {
-          x: 90,
-          y: 652 - i * 23.4,
+    const boxPositions = [
+      { x: 0, y: 0 },
+      { x: 280, y: 0 },
+      { x: 0, y: -198 },
+      { x: 280, y: -198 },
+      { x: 0, y: -395 },
+      { x: 280, y: -395 },
+    ] as const;
+
+    for (let i = 0; i < 6; i++) {
+      const box = boxPositions[i];
+      const stats = PokeStatsSchema.parse(statList[i]);
+      pages.forEach((page) => {
+        leftOrder.forEach((idx, j) => {
+          page.drawText(stats[idx], {
+            x: 90 + box.x,
+            y: 652 - j * 23.4 + box.y,
+            size: 12,
+            font: helvetica,
+          });
+        });
+      });
+      rightOrder.forEach((idx, j) => {
+        pages[0].drawText(stats[idx], {
+          x: 252 + box.x,
+          y: 628 - j * 23.4 + box.y,
           size: 12,
           font: helvetica,
         });
       });
-    });
-    rightOrder.forEach((idx, i) => {
-      pages[0].drawText(stats[idx], {
-        x: 250,
-        y: 628 - i * 23.4,
-        size: 12,
-        font: helvetica,
-      });
-    });
+    }
 
     const pdfBytes = await pdfDoc.save();
     const file = new Blob([pdfBytes], {

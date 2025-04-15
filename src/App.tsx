@@ -66,20 +66,9 @@ function App() {
             >
               Capture stats
             </Button>
-            <Button
-              variant={"secondary"}
-              onClick={() => renderPdf(statsList[currentPoke])}
-            >
+            <Button variant={"secondary"} onClick={() => renderPdf(statsList)}>
               Print team list
             </Button>
-            {/*
-            <Button
-              variant={"secondary"}
-              onClick={() => renderPdf(stats[currentPoke])}
-            >
-              New team list
-            </Button>
-  */}
           </div>
           <Sidebar
             variant="floating"
