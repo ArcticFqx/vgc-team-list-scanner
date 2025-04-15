@@ -3,7 +3,6 @@ import { PDFDocument, StandardFonts } from "pdf-lib";
 import { PokeStatsSchema, type PokeStats } from "@/lib/PokeStatsSchema";
 
 const url = "./team-list.pdf";
-const pdfOriginal = await fetch(url).then((res) => res.arrayBuffer());
 
 export default function useRenderPokeTeamList() {
   const [iframe, setIframe] = useState<HTMLIFrameElement>();
@@ -19,6 +18,7 @@ export default function useRenderPokeTeamList() {
   }, []);
 
   const exportPdf = async (statList: PokeStats[]) => {
+    const pdfOriginal = await fetch(url).then((res) => res.arrayBuffer());
     const pdfDoc = await PDFDocument.load(pdfOriginal);
     const helvetica = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
 
@@ -45,11 +45,6 @@ export default function useRenderPokeTeamList() {
     ] as const;
 
     statList[0][rightOrder[0]];
-
-    const leftX = 90;
-    const leftY = 652;
-    const rightX = 250;
-    const rightY = 628;
 
     const boxPositions = [
       { x: 0, y: 0 },
