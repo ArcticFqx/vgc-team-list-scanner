@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Button } from "./components/ui/button";
 import useScanPokeBox from "./hooks/useScanPokeBox";
 import useRenderPokeTeamList from "./hooks/useRenderPokeTeamList";
-import PokeCam from "./components/PokeCam";
+import usePokeCam from "./components/PokeCam";
 import Webcam from "react-webcam";
 import { useForm } from "react-hook-form";
 import {
@@ -14,6 +14,13 @@ import {
 } from "./components/ui/sidebar";
 import { usePokeStore } from "./lib/PokeStatsStore";
 import { PokeStats, PokeStatsSchema } from "./lib/PokeStatsSchema";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./components/ui/select";
 
 function App() {
   const camref = useRef<Webcam>(null);
@@ -23,7 +30,7 @@ function App() {
   const statsList = usePokeStore((store) => store.pkmnStatsList);
   const setPokeStatsAt = usePokeStore((store) => store.setPokeStatsAt);
 
-  const { register, setValue, control, getValues } = useForm<PokeStats>();
+  const { register, setValue, getValues } = useForm<PokeStats>();
 
   const renderPdf = useRenderPokeTeamList();
   const scanStats = useScanPokeBox((stats) => {
@@ -49,17 +56,19 @@ function App() {
     setPokeStatsAt(currentPoke, stats);
   };
 
+  const [PokeCam, devices, setActiveDeviceId] = usePokeCam({ ref: camref });
+
   return (
     <>
       <main className="container relative text-white mx-auto max-w-[1280px] flex flex-col gap-4 ">
         <h1 className="text-3xl mt-6 text-shadow-lg/30 font-bold">
           VGC team list scanner
         </h1>
-        <div className="aspect-video bg-blue-600 rounded overflow-clip shadow-lg/40">
-          <PokeCam ref={camref} />
+        <div className="aspect-video bg-blue-600 rounded overflow-clip shadow-lg/40 max-w-full">
+          {PokeCam}
         </div>
         <SidebarProvider className="relative left-0 top-0 h-fit min-h-fit">
-          <div className="flex flex-col gap-2 bg-sidebar/95 rounded mr-4 p-4 shadow-lg/40 ">
+          <div className="flex flex-col gap-2 bg-sidebar/95 rounded mr-4 p-4 shadow-lg/40 w-56">
             <Button
               variant={"secondary"}
               onClick={() => scanStats(camref.current!.video)}
@@ -69,6 +78,18 @@ function App() {
             <Button variant={"secondary"} onClick={() => renderPdf(statsList)}>
               Print team list
             </Button>
+            <Select onValueChange={setActiveDeviceId}>
+              <SelectTrigger className="w-full shadow/40 font-semibold text-black">
+                <SelectValue placeholder="Capture card" />
+              </SelectTrigger>
+              <SelectContent>
+                {devices.map((dev) => {
+                  return (
+                    <SelectItem value={dev.deviceId}>{dev.label}</SelectItem>
+                  );
+                })}
+              </SelectContent>
+            </Select>
           </div>
           <Sidebar
             variant="floating"
@@ -180,6 +201,7 @@ function App() {
             </form>
           </div>
         </SidebarProvider>
+        <p className="text-shadow-lg/30">Made with ❤️ by ArcticFqx</p>
       </main>
     </>
   );
