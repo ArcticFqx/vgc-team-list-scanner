@@ -1,21 +1,21 @@
 import { z } from "zod";
 
 export const PokeStatsSchema = z.object({
-  name: z.string(),
-  tera: z.string(),
-  level: z.string(),
-  hp: z.string(),
-  attack: z.string(),
-  defense: z.string(),
-  spatk: z.string(),
-  spdef: z.string(),
-  speed: z.string(),
-  ability: z.string(),
-  item: z.string(),
-  move1: z.string(),
-  move2: z.string(),
-  move3: z.string(),
-  move4: z.string(),
+  name: z.string().default(""),
+  tera: z.string().default(""),
+  level: z.string().default(""),
+  hp: z.string().default(""),
+  attack: z.string().default(""),
+  defense: z.string().default(""),
+  spatk: z.string().default(""),
+  spdef: z.string().default(""),
+  speed: z.string().default(""),
+  ability: z.string().default(""),
+  item: z.string().default("—"),
+  move1: z.string().default("—"),
+  move2: z.string().default("—"),
+  move3: z.string().default("—"),
+  move4: z.string().default("—"),
 });
 
 export type PokeStats = z.infer<typeof PokeStatsSchema>;

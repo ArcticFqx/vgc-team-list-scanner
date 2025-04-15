@@ -15,7 +15,6 @@ export default function useScanPokeBox(onStats = (stats: PokeStats) => {}) {
       "saturate(4) contrast(1.2) hue-rotate(60deg) invert() brightness(2) grayscale() brightness(2.5) contrast(1.5)";
 
     setCanvas(canvas);
-
     return () => {
       canvas.remove();
     };
@@ -121,7 +120,7 @@ export default function useScanPokeBox(onStats = (stats: PokeStats) => {}) {
       videoFeed,
       1055 * scaleX,
       345 * scaleY,
-      60 * scaleX,
+      50 * scaleX,
       35 * scaleY,
       0,
       350,
