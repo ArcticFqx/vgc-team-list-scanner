@@ -85,7 +85,9 @@ function App() {
               <SelectContent>
                 {devices.map((dev) => {
                   return (
-                    <SelectItem value={dev.deviceId}>{dev.label}</SelectItem>
+                    <SelectItem value={dev.deviceId || "placeholder"}>
+                      {dev.label}
+                    </SelectItem>
                   );
                 })}
               </SelectContent>
