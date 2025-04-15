@@ -1,23 +1,6 @@
+import { PokeStats, PokeStatsSchema } from "@/lib/PokeStatsSchema";
 import { useEffect, useState } from "react";
 import Tesseract from "tesseract.js";
-
-export type PokeStats = {
-  name: string;
-  level: string;
-  hp: string;
-  attack: string;
-  defense: string;
-  spatk: string;
-  spdef: string;
-  speed: string;
-  ability: string;
-  item: string;
-  move1: string;
-  move2: string;
-  move3: string;
-  move4: string;
-  tera: string;
-};
 
 export default function useScanPokeBox(onStats = (stats: PokeStats) => {}) {
   const [canvas, setCanvas] = useState<HTMLCanvasElement>();
@@ -255,10 +238,19 @@ export default function useScanPokeBox(onStats = (stats: PokeStats) => {}) {
       .filter((s) => s.length)
       .map((s) => s.trim());
 
+    if (!trimmed.length) {
+      console.log("Failed to parse, are you on the right screen?");
+      return;
+    }
+
     const teraIndex = trimmed.length - 1;
 
     const stats: PokeStats = {
       name: trimmed[0],
+      tera: trimmed[teraIndex]
+        .split(" ")
+        .reverse()[0]
+        .replace(/[^A-Z]/g, ""),
       level: trimmed[1].slice(4),
       hp: trimmed[2].split("/")[1],
       attack: trimmed[3],
@@ -272,10 +264,6 @@ export default function useScanPokeBox(onStats = (stats: PokeStats) => {}) {
       move2: "—",
       move3: "—",
       move4: "—",
-      tera: trimmed[teraIndex]
-        .split(" ")
-        .reverse()[0]
-        .replace(/[^A-Z]/g, ""),
     };
 
     for (let i = 10; i < teraIndex; i++) {

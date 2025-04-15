@@ -115,7 +115,7 @@
     @apply border-border outline-ring/50;
   }
   html {
-    @apply min-h-full bg-linear-to-br from-cyan-600 via-teal-600 to-blue-600 bg-cover;
+    @apply min-h-full bg-linear-to-br from-cyan-600 via-teal-600 to-blue-600 bg-cover bg-fixed;
   }
   body {
     @apply text-foreground;
